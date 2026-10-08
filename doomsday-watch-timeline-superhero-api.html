@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Before Doomsday: Marvel watch timeline</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #E9EDE6;
+    --ink: #14251C;
+    --muted: #46594E;
+    --doom: #1E5B45;
+    --copper: #B4652A;
+    --alert: #A3322A;
+    --xmen: #D9A21B;
+    --infinity: #2F62B5;
+    --multi: #7A4AB8;
+    --guard: #C2453A;
+    --font: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font);
+    font-size: 17px;
+    line-height: 1.5;
+  }
+  :focus-visible { outline: 3px solid var(--copper); outline-offset: 3px; }
+
+  /* Hero: the verdict is the headline */
+  .hero { max-width: 1080px; margin: 0 auto; padding: 56px 20px 36px; }
+  .hero h1 {
+    margin: 0 0 16px;
+    font-weight: 850;
+    font-stretch: 68%;
+    font-size: clamp(2.8rem, 10vw, 6.4rem);
+    line-height: 0.92;
+    letter-spacing: -0.01em;
+    max-width: 14ch;
+  }
+  .hero p { margin: 0; max-width: 56ch; color: var(--muted); font-size: 1.1rem; }
+  .app-name { margin: 0 0 20px; font-weight: 600; font-size: 0.95rem; color: var(--muted); }
+
+  /* Layout */
+  .layout {
+    max-width: 1080px; margin: 0 auto; padding: 0 20px 96px;
+    display: grid; gap: 32px; grid-template-columns: minmax(0, 1fr);
+  }
+  @media (min-width: 860px) {
+    .layout { grid-template-columns: 300px minmax(0, 1fr); align-items: start; gap: 56px; }
+    .panel { position: sticky; top: 20px; }
+  }
+
+  /* Control panel */
+  .panel {
+    background: var(--doom); color: var(--paper);
+    padding: 24px 22px 26px;
+  }
+  .panel h2 { margin: 0 0 18px; font-size: 1.15rem; font-weight: 800; font-stretch: 85%; }
+  .field { margin: 0 0 22px; border: 0; padding: 0; min-width: 0; }
+  .field legend, .field > label.lab { display: block; padding: 0; margin: 0 0 8px; font-weight: 600; font-size: 0.95rem; }
+  .hours-out { font-weight: 800; font-stretch: 80%; font-size: 1.6rem; line-height: 1; margin-bottom: 8px; }
+  input[type="range"] { width: 100%; accent-color: #F2C27A; }
+  input[type="date"] {
+    width: 100%; font: inherit; color: var(--ink); background: var(--paper);
+    border: 0; padding: 9px 10px;
+  }
+  .seg { display: grid; grid-template-columns: 1fr 1fr; }
+  .seg label { position: relative; }
+  .seg input { position: absolute; opacity: 0; inset: 0; }
+  .seg span {
+    display: block; text-align: center; padding: 9px 6px; font-size: 0.95rem; font-weight: 600;
+    border: 2px solid var(--paper); cursor: pointer;
+  }
+  .seg label:first-child span { border-right-width: 1px; }
+  .seg label:last-child span { border-left-width: 1px; }
+  .seg input:checked + span { background: var(--paper); color: var(--doom); }
+  .seg input:focus-visible + span { outline: 3px solid #F2C27A; outline-offset: 2px; }
+
+  .chip { display: flex; align-items: center; gap: 10px; padding: 6px 0; cursor: pointer; font-size: 0.98rem; }
+  .chip input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+  .chip .sw {
+    flex: none; width: 18px; height: 18px; border: 3px solid var(--c); background: var(--c);
+  }
+  .chip input:not(:checked) + .sw { background: transparent; }
+  .chip input:not(:checked) ~ .txt { opacity: 0.6; }
+  .chip input:focus-visible + .sw { outline: 3px solid #F2C27A; outline-offset: 3px; }
+  .chip .cnt { margin-left: auto; opacity: 0.75; font-variant-numeric: tabular-nums; font-size: 0.9rem; }
+
+  .btn-reset {
+    font: inherit; font-weight: 600; font-size: 0.92rem; color: var(--paper); background: none;
+    border: 2px solid var(--paper); padding: 8px 12px; cursor: pointer;
+  }
+  .btn-reset:hover { background: rgba(233,237,230,0.14); }
+  .tally { margin: 0 0 22px; font-size: 0.95rem; }
+
+  /* Timeline */
+  .timeline { list-style: none; margin: 0; padding: 0; }
+  .timeline li { position: relative; padding: 10px 0 10px 46px; }
+  .timeline li::before {
+    content: ""; position: absolute; left: 15px; width: 6px; top: 0; bottom: 0; background: var(--c);
+  }
+  .timeline li:first-child::before { top: 26px; }
+  .timeline li.group { padding: 26px 0 6px 46px; font-weight: 800; font-stretch: 85%; font-size: 1.05rem; color: var(--muted); }
+  .timeline li.group:first-child { padding-top: 0; }
+  .timeline li.group:first-child::before { top: 26px; }
+  .node {
+    position: absolute; left: 6px; top: 12px; width: 24px; height: 24px; border-radius: 50%;
+    border: 4px solid var(--c); background: var(--paper); z-index: 1;
+  }
+  .stop.done .node { background: var(--c); }
+
+  .row { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 12px; align-items: start; }
+  .check { position: relative; display: block; width: 28px; height: 28px; margin-top: 2px; cursor: pointer; }
+  .check input { position: absolute; inset: 0; opacity: 0; margin: 0; cursor: pointer; }
+  .check .box { position: absolute; inset: 0; border: 2px solid var(--ink); background: var(--paper); }
+  .check input:checked + .box { background: var(--ink); }
+  .check input:checked + .box::after {
+    content: ""; position: absolute; left: 8px; top: 3px; width: 8px; height: 14px;
+    border: solid var(--paper); border-width: 0 3px 3px 0; transform: rotate(45deg);
+  }
+  .check input:focus-visible + .box { outline: 3px solid var(--copper); outline-offset: 3px; }
+
+  .head {
+    font: inherit; color: inherit; background: none; border: 0; padding: 0; text-align: left; cursor: pointer;
+    display: block; width: 100%;
+  }
+  .t { display: block; font-weight: 750; font-stretch: 88%; font-size: 1.22rem; line-height: 1.2; }
+  .m { display: block; color: var(--muted); font-size: 0.92rem; margin-top: 2px; }
+  .stop.done .t { color: var(--muted); text-decoration: line-through; text-decoration-thickness: 1px; }
+  .when { text-align: right; font-weight: 700; font-variant-numeric: tabular-nums; padding-top: 3px; min-width: 64px; }
+  .stop.done .when { color: var(--muted); font-weight: 500; }
+  .stop.late .when { color: var(--alert); }
+  .note {
+    grid-column: 2 / 4; margin: 6px 0 4px; padding-left: 12px; border-left: 4px solid var(--c);
+    color: var(--muted); font-size: 0.98rem; max-width: 52ch;
+  }
+  .note[hidden] { display: none; }
+
+  /* Terminus */
+  .terminus { position: relative; padding: 4px 0 0 46px; }
+  .terminus::before {
+    content: ""; position: absolute; left: 15px; top: 0; width: 6px; height: 22px; background: var(--copper);
+  }
+  .terminus .tnode {
+    position: absolute; left: 3px; top: 20px; width: 30px; height: 30px; background: var(--copper);
+    border: 4px solid var(--ink);
+  }
+  .terminus h2 {
+    margin: 10px 0 2px; padding-top: 6px;
+    font-weight: 850; font-stretch: 68%; font-size: clamp(2.2rem, 7vw, 3.4rem); line-height: 1; color: var(--copper);
+  }
+  .terminus p { margin: 0; color: var(--muted); }
+
+  .empty { padding: 20px 0 20px 46px; color: var(--muted); }
+  .src { max-width: 1080px; margin: 0 auto; padding: 0 20px 40px; color: var(--muted); font-size: 0.88rem; }
+  .src a { color: var(--doom); }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .node, .check .box { transition: background-color 0.18s ease; }
+  }
+  @media (max-width: 420px) {
+    body { font-size: 16px; }
+    .when { min-width: 52px; }
+  }
+  /* SuperHero API */
+  .api-panel {
+    max-width: 1080px;
+    margin: 0 auto 72px;
+    padding: 28px 20px;
+  }
+  .api-head {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(280px, 360px);
+    gap: 28px;
+    align-items: end;
+    border-top: 4px solid var(--doom);
+    padding-top: 20px;
+  }
+  .api-kicker {
+    margin: 0 0 5px;
+    color: var(--copper);
+    font-size: .78rem;
+    font-weight: 800;
+    letter-spacing: .12em;
+  }
+  .api-panel h2 {
+    margin: 0;
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    line-height: 1;
+  }
+  .api-panel p { color: var(--muted); }
+  .api-search label {
+    display: block;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .api-search-row { display: flex; gap: 8px; }
+  .api-search input {
+    min-width: 0;
+    flex: 1;
+    font: inherit;
+    padding: 10px 11px;
+    border: 2px solid var(--ink);
+    background: white;
+  }
+  .api-search button {
+    font: inherit;
+    font-weight: 700;
+    padding: 10px 14px;
+    border: 2px solid var(--ink);
+    background: var(--doom);
+    color: var(--paper);
+    cursor: pointer;
+  }
+  .api-status { margin: 16px 0 10px; }
+  .hero-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+  }
+  .hero-card {
+    border: 2px solid var(--ink);
+    background: white;
+    overflow: hidden;
+  }
+  .hero-card img {
+    display: block;
+    width: 100%;
+    height: 260px;
+    object-fit: cover;
+    background: var(--paper);
+  }
+  .hero-card-body { padding: 14px; }
+  .hero-card h3 { margin: 0 0 5px; font-size: 1.2rem; }
+  .hero-meta { margin: 0; font-size: .88rem; color: var(--muted); }
+  .hero-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+    margin-top: 12px;
+  }
+  .hero-stat {
+    padding: 7px;
+    background: var(--paper);
+    font-size: .78rem;
+    text-align: center;
+  }
+  .hero-stat strong { display: block; font-size: 1rem; }
+  @media (max-width: 700px) {
+    .api-head { grid-template-columns: 1fr; }
+  }
+
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <p class="app-name">Before Doomsday: Marvel watch timeline</p>
+  <h1 id="verdict" aria-live="polite">Loading your timeline.</h1>
+  <p id="sub"></p>
+</header>
+
+<div class="layout">
+  <aside class="panel" aria-label="Plan settings">
+    <h2>Your pace</h2>
+
+    <div class="field">
+      <label class="lab" for="hours">Hours you can watch each week</label>
+      <div class="hours-out" id="hoursOut">6 hours</div>
+      <input type="range" id="hours" min="1" max="30" step="0.5" value="6">
+    </div>
+
+    <div class="field">
+      <label class="lab" for="start">Start date</label>
+      <input type="date" id="start">
+    </div>
+
+    <fieldset class="field">
+      <legend>Order</legend>
+      <div class="seg">
+        <label><input type="radio" name="order" value="release" checked><span>Release</span></label>
+        <label><input type="radio" name="order" value="line"><span>By line</span></label>
+      </div>
+    </fieldset>
+
+    <fieldset class="field" id="lineFilters">
+      <legend>Lines to include</legend>
+    </fieldset>
+
+    <div class="field">
+      <label class="chip" style="--c: var(--paper)">
+        <input type="checkbox" id="extras">
+        <span class="sw"></span>
+        <span class="txt" id="extrasTxt">Add background films</span>
+      </label>
+    </div>
+
+    <p class="tally" id="tally"></p>
+    <button type="button" class="btn-reset" id="reset">Clear watched marks</button>
+  </aside>
+
+  <main>
+    <ol class="timeline" id="timeline"></ol>
+    <div class="terminus" id="terminus">
+      <span class="tnode" aria-hidden="true"></span>
+      <h2>Avengers: Doomsday</h2>
+      <p>Opens in theaters December 18, 2026.</p>
+    </div>
+  </main>
+</div>
+
+  <section class="api-panel" aria-labelledby="api-title">
+    <div class="api-head">
+      <div>
+        <p class="api-kicker">SUPERHERO API</p>
+        <h2 id="api-title">Doomsday Characters</h2>
+        <p>Character information is loaded from SuperHero API using your access token.</p>
+      </div>
+      <div class="api-search">
+        <label for="heroSearch">Search hero</label>
+        <div class="api-search-row">
+          <input id="heroSearch" type="search" placeholder="e.g. Wolverine">
+          <button type="button" id="heroSearchBtn">Search</button>
+        </div>
+      </div>
+    </div>
+    <p id="apiStatus" class="api-status" aria-live="polite">Enter your SuperHero API access token in the JavaScript configuration.</p>
+    <div id="heroGrid" class="hero-grid"></div>
+  </section>
+
+<p class="src">
+  Core list follows the titles Disney+ highlights ahead of Doomsday. Background films are optional extras.
+  Runtimes are rounded; Loki covers both seasons (about 10 hours).
+  Dates assume you watch a steady amount every day. Tap a title for why it matters.
+</p>
+
+<script>
+(function () {
+  var DEADLINE = new Date(2026, 11, 18);
+  var DAY = 86400000;
+
+  // ============================================================
+  // SUPERHERO API CONFIGURATION
+  // Get your Access Token from https://superheroapi.com/
+  // Replace YOUR_ACCESS_TOKEN with your real token.
+  // ============================================================
+  var SUPERHERO_API_KEY = "YOUR_ACCESS_TOKEN";
+  var SUPERHERO_API_BASE = "https://superheroapi.com/api/" + SUPERHERO_API_KEY;
+
+  // Characters relevant to the Avengers: Doomsday watch timeline.
+  var DOOMSDAY_HEROES = [
+    "Wolverine", "Deadpool", "Captain America", "Thor", "Hulk",
+    "Loki", "Doctor Strange", "Black Panther", "Shang-Chi",
+    "Mr Fantastic", "Doctor Doom"
+  ];
+
+  var LINES = {
+    xmen:     { name: "X-Men films",      color: "var(--xmen)" },
+    infinity: { name: "Infinity Saga",    color: "var(--infinity)" },
+    multi:    { name: "Multiverse Saga",  color: "var(--multi)" },
+    guard:    { name: "The new guard",    color: "var(--guard)" }
+  };
+  var LINE_KEYS = ["xmen", "infinity", "multi", "guard"];
+
+  // core = on Disney+'s highlighted list; core:false = optional background film
+  var DATA = [
+    { id: "xmen",   t: "X-Men", y: 2000, d: "2000-07-14", min: 104, line: "xmen", core: true,
+      note: "Introduces Xavier, Magneto, Cyclops and Mystique. All four legacy characters are returning in Doomsday." },
+    { id: "x2",     t: "X2", y: 2003, d: "2003-05-02", min: 134, line: "xmen", core: true,
+      note: "Disney+ lists it with the first film as recommended prep for the returning X-Men." },
+    { id: "dofp",   t: "X-Men: Days of Future Past", y: 2014, d: "2014-05-23", min: 132, line: "xmen", core: false,
+      note: "Changed how the original trilogy ends. Some guides call it essential, but it is not on Disney+'s list." },
+    { id: "ironman",t: "Iron Man", y: 2008, d: "2008-05-02", min: 126, line: "infinity", core: false,
+      note: "Where the MCU starts. Robert Downey Jr. returns for Doomsday as Victor von Doom, not Tony Stark." },
+    { id: "tfa",    t: "Captain America: The First Avenger", y: 2011, d: "2011-07-22", min: 124, line: "infinity", core: true,
+      note: "Steve Rogers' origin and his bond with Peggy Carter. Chris Evans is back for Doomsday." },
+    { id: "avengers",t: "The Avengers", y: 2012, d: "2012-05-04", min: 143, line: "infinity", core: true,
+      note: "The team's first outing. Thor and Hulk are both confirmed for Doomsday." },
+    { id: "ultron", t: "Avengers: Age of Ultron", y: 2015, d: "2015-05-01", min: 141, line: "infinity", core: false,
+      note: "The one early Avengers film Disney+ left off its list." },
+    { id: "civilwar",t: "Captain America: Civil War", y: 2016, d: "2016-05-06", min: 147, line: "infinity", core: false,
+      note: "Where the Avengers split apart. Sebastian Stan and Anthony Mackie are both in the Doomsday cast." },
+    { id: "strange",t: "Doctor Strange", y: 2016, d: "2016-11-04", min: 115, line: "infinity", core: false,
+      note: "First look at the mystic arts and the edges of the multiverse." },
+    { id: "ragnarok",t: "Thor: Ragnarok", y: 2017, d: "2017-11-03", min: 130, line: "infinity", core: false,
+      note: "Sets Thor and Hulk's dynamic. Both are confirmed for Doomsday." },
+    { id: "bp",     t: "Black Panther", y: 2018, d: "2018-02-16", min: 134, line: "infinity", core: false,
+      note: "Introduces Wakanda, whose people are part of the Doomsday fight." },
+    { id: "iw",     t: "Avengers: Infinity War", y: 2018, d: "2018-04-27", min: 149, line: "infinity", core: true,
+      note: "Thor returns to the warrior mindset he had here, according to co-director Joe Russo." },
+    { id: "endgame",t: "Avengers: Endgame", y: 2019, d: "2019-04-26", min: 181, line: "infinity", core: true,
+      note: "Steve goes back to live with Peggy. Doomsday's marketing has leaned on this film, including Endgame Encore scenes." },
+    { id: "loki",   t: "Loki (seasons 1 and 2)", y: 2021, d: "2021-06-09", min: 600, line: "multi", core: true, approx: true,
+      note: "Opens up the multiverse and the Time Variance Authority. Tom Hiddleston is in the Doomsday cast." },
+    { id: "shangchi",t: "Shang-Chi and the Legend of the Ten Rings", y: 2021, d: "2021-09-03", min: 132, line: "multi", core: true,
+      note: "Simu Liu is in the Doomsday cast." },
+    { id: "nwh",    t: "Spider-Man: No Way Home", y: 2021, d: "2021-12-17", min: 148, line: "multi", core: true,
+      note: "The multiverse breaks open. Disney+ recommends it." },
+    { id: "dsmom",  t: "Doctor Strange in the Multiverse of Madness", y: 2022, d: "2022-05-06", min: 126, line: "multi", core: true,
+      note: "Shows what multiverse travel can cost. Disney+ recommends it." },
+    { id: "wf",     t: "Black Panther: Wakanda Forever", y: 2022, d: "2022-11-11", min: 161, line: "guard", core: true,
+      note: "Letitia Wright and Winston Duke are both in the Doomsday cast." },
+    { id: "dw",     t: "Deadpool & Wolverine", y: 2024, d: "2024-07-26", min: 128, line: "multi", core: true,
+      note: "Disney+ recommends it as multiverse and X-Men-adjacent prep." },
+    { id: "bnw",    t: "Captain America: Brave New World", y: 2025, d: "2025-02-14", min: 118, line: "guard", core: true,
+      note: "Anthony Mackie's Captain America and Danny Ramirez are both in the Doomsday cast." },
+    { id: "tbolts", t: "Thunderbolts*", y: 2025, d: "2025-05-02", min: 127, line: "guard", core: true,
+      note: "The New Avengers' origin. Florence Pugh, Sebastian Stan, David Harbour, Wyatt Russell and Lewis Pullman are all in the cast." },
+    { id: "ff",     t: "The Fantastic Four: First Steps", y: 2025, d: "2025-07-25", min: 115, line: "guard", core: true,
+      note: "Pedro Pascal, Vanessa Kirby, Ebon Moss-Bachrach and Joseph Quinn are in the cast. The Four fight alongside the Avengers." }
+  ];
+
+  var KEY = "doomsday-watch-v1";
+  var S = { hours: 6, start: iso(new Date()), order: "release", extras: false,
+            lines: { xmen: true, infinity: true, multi: true, guard: true }, done: {} };
+  var open = {};
+  var focusId = null;
+
+  try {
+    var saved = JSON.parse(localStorage.getItem(KEY) || "null");
+    if (saved) {
+      S.hours = saved.hours || S.hours;
+      S.order = saved.order || S.order;
+      S.extras = !!saved.extras;
+      S.lines = saved.lines || S.lines;
+      S.done = saved.done || {};
+    }
+  } catch (e) { /* storage unavailable: keep state in memory */ }
+
+  function save() {
+    try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {}
+  }
+  function pad(n) { return n < 10 ? "0" + n : "" + n; }
+  function iso(d) { return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate()); }
+  function parse(s) {
+    var p = (s || "").split("-");
+    if (p.length !== 3) { var n = new Date(); return new Date(n.getFullYear(), n.getMonth(), n.getDate()); }
+    return new Date(+p[0], +p[1] - 1, +p[2]);
+  }
+  function addDays(d, n) { return new Date(d.getFullYear(), d.getMonth(), d.getDate() + n); }
+  function dayDiff(a, b) { return Math.round((b - a) / DAY); }
+  function short(d) { return d.toLocaleDateString("en-US", { month: "short", day: "numeric" }); }
+  function dur(min) {
+    var h = Math.floor(min / 60), m = Math.round(min % 60);
+    if (!h) return m + "m";
+    return m ? h + "h " + m + "m" : h + "h";
+  }
+  function plural(n, w) { return n + " " + w + (n === 1 ? "" : "s"); }
+  function el(id) { return document.getElementById(id); }
+
+  // Build line filters once
+  var filterBox = el("lineFilters");
+  LINE_KEYS.forEach(function (k) {
+    var lab = document.createElement("label");
+    lab.className = "chip";
+    lab.style.setProperty("--c", LINES[k].color);
+    lab.innerHTML = '<input type="checkbox" data-line="' + k + '"><span class="sw"></span>' +
+                    '<span class="txt">' + LINES[k].name + '</span><span class="cnt" data-cnt="' + k + '"></span>';
+    filterBox.appendChild(lab);
+  });
+
+  function syncControls() {
+    el("hours").value = S.hours;
+    el("hoursOut").textContent = plural(S.hours, "hour") + " a week";
+    el("start").value = S.start;
+    el("extras").checked = S.extras;
+    document.querySelectorAll('input[name="order"]').forEach(function (r) { r.checked = r.value === S.order; });
+    document.querySelectorAll("[data-line]").forEach(function (c) { c.checked = !!S.lines[c.getAttribute("data-line")]; });
+    var extraCount = DATA.filter(function (d) { return !d.core; }).length;
+    el("extrasTxt").textContent = "Add " + extraCount + " background films";
+    LINE_KEYS.forEach(function (k) {
+      var n = DATA.filter(function (d) { return d.line === k && (d.core || S.extras); }).length;
+      var c = document.querySelector('[data-cnt="' + k + '"]');
+      if (c) c.textContent = n;
+    });
+  }
+
+  function render() {
+    var start = parse(S.start);
+    var items = DATA.filter(function (d) { return (d.core || S.extras) && S.lines[d.line]; });
+    items.sort(function (a, b) {
+      if (S.order === "line") {
+        var li = LINE_KEYS.indexOf(a.line) - LINE_KEYS.indexOf(b.line);
+        if (li) return li;
+      }
+      return a.d.localeCompare(b.d);
+    });
+
+    var mpd = (S.hours * 60) / 7;
+    var remaining = items.filter(function (d) { return !S.done[d.id]; });
+    var totalMin = remaining.reduce(function (s, d) { return s + d.min; }, 0);
+    var cum = 0;
+    var dates = {};
+    remaining.forEach(function (d) {
+      cum += d.min;
+      dates[d.id] = addDays(start, Math.max(0, Math.ceil(cum / mpd) - 1));
+    });
+
+    // Verdict
+    var vEl = el("verdict"), sEl = el("sub");
+    var daysAvail = dayDiff(start, DEADLINE);
+    if (!items.length) {
+      vEl.textContent = "Nothing on the list.";
+      sEl.textContent = "Turn on at least one line to build a timeline.";
+    } else if (!remaining.length) {
+      vEl.textContent = "You're ready for Doom.";
+      sEl.textContent = "Every title on your list is marked watched. Doomsday opens December 18.";
+    } else if (daysAvail <= 0) {
+      vEl.textContent = "Doomsday is here.";
+      sEl.textContent = "The release date has arrived. Keep marking titles as you catch up.";
+    } else {
+      var daysNeeded = Math.ceil(totalMin / mpd);
+      var finish = addDays(start, daysNeeded - 1);
+      var gap = dayDiff(finish, DEADLINE);
+      var summary = plural(remaining.length, "title") + " left, " + dur(totalMin) + " of watching.";
+      vEl.textContent = "You finish " + short(finish) + ".";
+      if (gap >= 1) {
+        sEl.textContent = plural(gap, "day") + " before Doomsday opens. " + summary;
+      } else {
+        var need = (totalMin / 60) / (daysAvail / 7);
+        var needTxt = (Math.ceil(need * 2) / 2).toString();
+        var lead = gap === 0 ? "That is opening day. " : "That is " + plural(-gap, "day") + " after Doomsday opens. ";
+        sEl.textContent = lead + "Watch at least " + needTxt + " hours a week to finish in time, or skip a line. " + summary;
+      }
+    }
+
+    // Tally
+    var doneCount = items.length - remaining.length;
+    el("tally").textContent = doneCount + " of " + items.length + " watched, " + dur(totalMin) + " to go.";
+
+    // Timeline
+    var list = el("timeline");
+    list.innerHTML = "";
+    if (!items.length) {
+      var e = document.createElement("li");
+      e.className = "empty";
+      e.textContent = "No titles selected. Turn on a line in the panel.";
+      list.appendChild(e);
+      return;
+    }
+    var lastLine = null;
+    items.forEach(function (d) {
+      var line = LINES[d.line];
+      if (S.order === "line" && d.line !== lastLine) {
+        var g = document.createElement("li");
+        g.className = "group";
+        g.style.setProperty("--c", line.color);
+        g.textContent = line.name;
+        list.appendChild(g);
+      }
+      lastLine = d.line;
+
+      var done = !!S.done[d.id];
+      var when = dates[d.id];
+      var late = !done && when && dayDiff(when, DEADLINE) < 0;
+      var li = document.createElement("li");
+      li.className = "stop" + (done ? " done" : "") + (late ? " late" : "");
+      li.style.setProperty("--c", line.color);
+      li.setAttribute("data-id", d.id);
+      var whenTxt = done ? "Watched" : short(when);
+      var whenSr = late ? '<span class="sr" style="position:absolute;left:-9999px"> (after release)</span>' : "";
+      li.innerHTML =
+        '<span class="node" aria-hidden="true"></span>' +
+        '<div class="row">' +
+          '<label class="check"><input type="checkbox"' + (done ? " checked" : "") +
+            ' aria-label="Mark ' + d.t.replace(/"/g, "&quot;") + ' as watched"><span class="box"></span></label>' +
+          '<button type="button" class="head" aria-expanded="' + (open[d.id] ? "true" : "false") + '">' +
+            '<span class="t"></span>' +
+            '<span class="m">' + d.y + ", " + (d.approx ? "about " : "") + dur(d.min) + '</span>' +
+          '</button>' +
+          '<span class="when">' + whenTxt + whenSr + '</span>' +
+          '<p class="note"' + (open[d.id] ? "" : " hidden") + '></p>' +
+        '</div>';
+      li.querySelector(".t").textContent = d.t;
+      li.querySelector(".note").textContent = d.note;
+      list.appendChild(li);
+    });
+
+    if (focusId) {
+      var target = list.querySelector('[data-id="' + focusId + '"] input');
+      if (target) target.focus();
+      focusId = null;
+    }
+  }
+
+
+  // -------------------- SuperHero API --------------------
+  function apiReady() {
+    return SUPERHERO_API_KEY && SUPERHERO_API_KEY !== "YOUR_ACCESS_TOKEN";
+  }
+
+  function escapeHtml(value) {
+    return String(value || "").replace(/[&<>"']/g, function (ch) {
+      return ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" })[ch];
+    });
+  }
+
+  function heroCard(h) {
+    var ps = h.powerstats || {};
+    var bio = h.biography || {};
+    var image = h.image && h.image.url ? h.image.url : "";
+    return '<article class="hero-card">' +
+      (image ? '<img src="' + escapeHtml(image) + '" alt="' + escapeHtml(h.name) + '">' : '') +
+      '<div class="hero-card-body">' +
+        '<h3>' + escapeHtml(h.name) + '</h3>' +
+        '<p class="hero-meta">' + escapeHtml(bio.publisher || "Unknown publisher") +
+          ' · ' + escapeHtml(bio.alignment || "unknown") + '</p>' +
+        '<div class="hero-stats">' +
+          stat("Strength", ps.strength) +
+          stat("Power", ps.power) +
+          stat("Combat", ps.combat) +
+        '</div>' +
+      '</div>' +
+    '</article>';
+  }
+
+  function stat(label, value) {
+    return '<div class="hero-stat"><strong>' + escapeHtml(value || "-") +
+      '</strong>' + escapeHtml(label) + '</div>';
+  }
+
+  async function searchHero(name) {
+    var response = await fetch(
+      SUPERHERO_API_BASE + "/search/" + encodeURIComponent(name)
+    );
+    if (!response.ok) throw new Error("API request failed (" + response.status + ")");
+    return response.json();
+  }
+
+  async function loadHero(name, append) {
+    var status = el("apiStatus");
+    if (!apiReady()) {
+      status.textContent = "API is ready, but no access token has been entered. Replace YOUR_ACCESS_TOKEN in the configuration.";
+      return;
+    }
+
+    status.textContent = "Loading " + name + "...";
+    try {
+      var data = await searchHero(name);
+      if (data.response !== "success" || !data.results || !data.results.length) {
+        status.textContent = "No character found for " + name + ".";
+        return;
+      }
+
+      var hero = data.results[0];
+      var grid = el("heroGrid");
+      if (!append) grid.innerHTML = "";
+      grid.insertAdjacentHTML("beforeend", heroCard(hero));
+      status.textContent = "Loaded " + hero.name + " from SuperHero API.";
+    } catch (err) {
+      status.textContent = "Could not load character data. Check your access token and internet connection.";
+      console.error(err);
+    }
+  }
+
+  async function loadDoomsdayHeroes() {
+    var grid = el("heroGrid");
+    if (!apiReady()) {
+      el("apiStatus").textContent =
+        "Add your SuperHero API access token at SUPERHERO_API_KEY to load character cards.";
+      return;
+    }
+
+    grid.innerHTML = "";
+    el("apiStatus").textContent = "Loading Doomsday characters...";
+
+    var results = await Promise.all(DOOMSDAY_HEROES.map(async function (name) {
+      try {
+        var data = await searchHero(name);
+        return data.response === "success" && data.results && data.results.length
+          ? data.results[0] : null;
+      } catch (e) {
+        return null;
+      }
+    }));
+
+    results.filter(Boolean).forEach(function (hero) {
+      grid.insertAdjacentHTML("beforeend", heroCard(hero));
+    });
+
+    el("apiStatus").textContent =
+      "Loaded " + results.filter(Boolean).length + " character records from SuperHero API.";
+  }
+
+  el("heroSearchBtn").addEventListener("click", function () {
+    var name = el("heroSearch").value.trim();
+    if (name) loadHero(name, false);
+  });
+
+  el("heroSearch").addEventListener("keydown", function (e) {
+    if (e.key === "Enter") {
+      var name = e.target.value.trim();
+      if (name) loadHero(name, false);
+    }
+  });
+
+  loadDoomsdayHeroes();
+
+  // Events
+  el("hours").addEventListener("input", function (e) {
+    S.hours = parseFloat(e.target.value);
+    el("hoursOut").textContent = plural(S.hours, "hour") + " a week";
+    save(); render();
+  });
+  el("start").addEventListener("change", function (e) {
+    if (e.target.value) { S.start = e.target.value; save(); render(); }
+  });
+  document.querySelectorAll('input[name="order"]').forEach(function (r) {
+    r.addEventListener("change", function () { if (r.checked) { S.order = r.value; save(); render(); } });
+  });
+  el("extras").addEventListener("change", function (e) { S.extras = e.target.checked; save(); syncControls(); render(); });
+  filterBox.addEventListener("change", function (e) {
+    var k = e.target.getAttribute("data-line");
+    if (k) { S.lines[k] = e.target.checked; save(); render(); }
+  });
+  el("reset").addEventListener("click", function () { S.done = {}; save(); render(); });
+
+  el("timeline").addEventListener("change", function (e) {
+    var li = e.target.closest(".stop");
+    if (!li) return;
+    var id = li.getAttribute("data-id");
+    if (e.target.checked) S.done[id] = true; else delete S.done[id];
+    focusId = id;
+    save(); render();
+  });
+  el("timeline").addEventListener("click", function (e) {
+    var btn = e.target.closest(".head");
+    if (!btn) return;
+    var li = btn.closest(".stop");
+    var id = li.getAttribute("data-id");
+    open[id] = !open[id];
+    btn.setAttribute("aria-expanded", open[id] ? "true" : "false");
+    li.querySelector(".note").hidden = !open[id];
+  });
+
+  syncControls();
+  render();
+})();
+</script>
+</body>
+</html>
